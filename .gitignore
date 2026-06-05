@@ -1,0 +1,15 @@
+# Emplacement : /projet_optimedit/Git/.gitignore
+
+# Ignorer les collections téléchargées localement
+collections/
+ansible_collections/
+
+# Ignorer les fichiers temporaires ou de retry d'Ansible
+*.retry
+*.log
+
+# Optionnel : masquer les fichiers de variables contenant des mots de passe en clair si non chiffrés avec Ansible Vault
+# *vault*.yml
+
+# Ignorer les rapports d'audit CSV
+00.00.audit_winrm_certs/csv_result/*.csv

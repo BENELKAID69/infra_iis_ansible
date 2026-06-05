@@ -1,0 +1,31 @@
+---
+# Emplacement /projet_optimedit/Git/02.02.play_dc_iis_ad_group.yml
+- name: "AD - Création du groupe de sécurité pour les comptes IIS"
+  hosts: srv_dc
+  gather_facts: false
+  tasks:
+
+    - name: "AD - Création du groupe global via variable all.yml"
+      microsoft.ad.group:
+        # Utilisation de la variable centralisée pour le nom du groupe
+        name: "{{ iis_service_accounts_group }}"
+        scope: global
+        category: security
+        path: "{{ app_service_accounts_ou }}"
+        state: present
+
+    - name: "AD - Collecte propre des comptes svc_* via PowerShell"
+      ansible.windows.win_shell: |
+        Get-ADUser -Filter "Name -like 'svc_*'" | Select-Object -ExpandProperty SamAccountName
+      register: service_accounts_ps
+
+    - name: "AD - Liaison des comptes svc_* au groupe via variable all.yml"
+      microsoft.ad.group:
+        # Utilisation de la variable centralisée ici aussi
+        name: "{{ iis_service_accounts_group }}"
+        scope: global        # Règle l'erreur de scope obligatoire
+        category: security   # Assure la cohérence de l'état
+        path: "{{ app_service_accounts_ou }}" # Guide le module dans l'arborescence AD
+        members:
+          add: "{{ service_accounts_ps.stdout_lines }}"
+        state: present

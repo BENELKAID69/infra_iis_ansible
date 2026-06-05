@@ -1,0 +1,10 @@
+---
+# Emplacment /projet_optimedit/Git/04.02.play_iis_ssl_https.yml
+- name: "Configuration SSL pour les 13 sites"
+  hosts: srv_iis
+  become: false
+  vars:
+    enable_ssl: true
+  roles:
+    - iis_setup
+
