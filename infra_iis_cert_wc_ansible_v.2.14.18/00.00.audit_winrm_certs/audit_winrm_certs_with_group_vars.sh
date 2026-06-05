@@ -8,7 +8,7 @@ RESULT_DIR="${SCRIPT_DIR}/csv_result"
 mkdir -p "$RESULT_DIR"
 
 # --- Configuration ---
-INVENTORY_FILE="/projet_optimedit/Git/inventory.yml"
+INVENTORY_FILE="${SCRIPT_DIR}/../inventory.yml"
 CA_PATH="/etc/ssl/certs/"
 DATE_STR=$(date +%Y%m%d_%H%M)
 

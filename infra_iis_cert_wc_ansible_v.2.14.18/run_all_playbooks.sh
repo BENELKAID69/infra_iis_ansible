@@ -44,33 +44,33 @@ execute_playbook() {
 
 # --- ÉTAPE 00 : PROVISIONING PRÉLIMINAIRE ---
 echo -e "\n${BLUE}--- Étape 00 : Génération Dynamique du Contexte Externe ---${NC}"
-#execute_playbook "00.00.play_all_interne_create_host_vars_file.yml" "Génération automatique des fichiers host_vars (IP)"
+execute_playbook "00.00.play_all_interne_create_host_vars_file.yml" "Génération automatique des fichiers host_vars (IP)"
 
 # --- ÉTAPE 01 : ACTIVE DIRECTORY, DNS & DÉLÉGATION KERBEROS ---
 echo -e "\n${BLUE}--- Étape 01 : Configuration Active Directory, DNS & Sécurité ---${NC}"
-#execute_playbook "01.00.plays_ad_dns_delegation_spn/01.01.play_iis_dc_create_users_applications.yml" "Création des comptes de service applicatifs"
-#execute_playbook "01.00.plays_ad_dns_delegation_spn/01.02.play_iis_dc_setup_dns.yml" "Configuration des zones et enregistrements DNS"
-#execute_playbook "01.00.plays_ad_dns_delegation_spn/01.03.play_iis_dc_ad_group.yml" "Création des groupes de sécurité Active Directory"
-#execute_playbook "01.00.plays_ad_dns_delegation_spn/01.04.play_iis_dc_ad_spn.yml" "Déploiement et configuration des SPN HTTP"
-#execute_playbook "01.00.plays_ad_dns_delegation_spn/01.05.play_iis_test_kerberos_delegation_smb_write.yml" "Validation de la chaîne de délégation Kerberos et écriture SMB"
-#execute_playbook "01.00.plays_ad_dns_delegation_spn/01.07.play_iis_maintenance_audit_applications_SPN_HTTP.yml" "Audit initial de maintenance et validation des SPN HTTP"
+execute_playbook "01.00.plays_ad_dns_delegation_spn/01.01.play_iis_dc_create_users_applications.yml" "Création des comptes de service applicatifs"
+execute_playbook "01.00.plays_ad_dns_delegation_spn/01.02.play_iis_dc_setup_dns.yml" "Configuration des zones et enregistrements DNS"
+execute_playbook "01.00.plays_ad_dns_delegation_spn/01.03.play_iis_dc_ad_group.yml" "Création des groupes de sécurité Active Directory"
+execute_playbook "01.00.plays_ad_dns_delegation_spn/01.04.play_iis_dc_ad_spn.yml" "Déploiement et configuration des SPN HTTP"
+execute_playbook "01.00.plays_ad_dns_delegation_spn/01.05.play_iis_test_kerberos_delegation_smb_write.yml" "Validation de la chaîne de délégation Kerberos et écriture SMB"
+execute_playbook "01.00.plays_ad_dns_delegation_spn/01.07.play_iis_maintenance_audit_applications_SPN_HTTP.yml" "Audit initial de maintenance et validation des SPN HTTP"
 
 # --- ÉTAPE 02 : DEPLOIEMENT DE LA COUCHE IIS HTTP ---
 echo -e "\n${BLUE}--- Étape 02 : Installation du Serveur Web IIS & Contenu HTTP ---${NC}"
-#execute_playbook "02.00.plays_install_iis_pool_http/02.01.play_iis_install_http.yml" "Installation du rôle Web-Server IIS et fonctionnalités"
-#execute_playbook "02.00.plays_install_iis_pool_http/02.02.play_iis_generate_index.html.yml" "Génération dynamique et injection des pages index.html"
+execute_playbook "02.00.plays_install_iis_pool_http/02.01.play_iis_install_http.yml" "Installation du rôle Web-Server IIS et fonctionnalités"
+execute_playbook "02.00.plays_install_iis_pool_http/02.02.play_iis_generate_index.html.yml" "Génération dynamique et injection des pages index.html"
 
 # --- ÉTAPE 03 : SÉCURISATION & DURCISSEMENT HTTPS (443 & PORTS DÉDIÉS) ---
 echo -e "\n${BLUE}--- Étape 03 : Chiffrement HTTPS & Isolation des Liaisons SSL ---${NC}"
-#execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.01.play_iis_flush_ssl_before_config.yml" "Purge préliminaire des liaisons SSL (Flush 443)"
-#execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.02.play_iis_ssl_https.yml" "Liaison du certificat Wildcard et configuration HTTPS Standard"
-#execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.03.play_iis_hardening_port_dedies_ssl_flush.yml" "Flush SSL des liaisons sur ports alternatifs"
-#execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.04.play_iis_hardening_port_dedies_ssl_conf.yml" "Durcissement HTTPS sur les ports dédiés isolés"
+execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.01.play_iis_flush_ssl_before_config.yml" "Purge préliminaire des liaisons SSL (Flush 443)"
+execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.02.play_iis_ssl_https.yml" "Liaison du certificat Wildcard et configuration HTTPS Standard"
+execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.03.play_iis_hardening_port_dedies_ssl_flush.yml" "Flush SSL des liaisons sur ports alternatifs"
+execute_playbook "03.00.plays_conf_https_443_ports_dedies/03.04.play_iis_hardening_port_dedies_ssl_conf.yml" "Durcissement HTTPS sur les ports dédiés isolés"
 
 # --- ÉTAPE 04 : IDENTITÉS APPLICATIVES DE POOLS & ACL NTFS ---
 echo -e "\n${BLUE}--- Étape 04 : Verrouillage des Pools d'Applications & Droits NTFS ---${NC}"
-#execute_playbook "04.00.plays_pool_indentity_svc_acl_ntfs/04.01.play_iis_hardening_pool_svc.yml" "Basculement des Application Pools sur les identités de service AD"
-#execute_playbook "04.00.plays_pool_indentity_svc_acl_ntfs/04.02.play_iis_acl_applications.yml" "Application des ACL NTFS restrictives sur les répertoires web"
+execute_playbook "04.00.plays_pool_indentity_svc_acl_ntfs/04.01.play_iis_hardening_pool_svc.yml" "Basculement des Application Pools sur les identités de service AD"
+execute_playbook "04.00.plays_pool_indentity_svc_acl_ntfs/04.02.play_iis_acl_applications.yml" "Application des ACL NTFS restrictives sur les répertoires web"
 execute_playbook "04.00.plays_pool_indentity_svc_acl_ntfs/04.03.iis.test_dir_acl_apps_Use_--limit_cible.yml" "Audit de sécurité et validation finale des permissions NTFS"
 
 # --- ÉTAPE 05 : MAINTENANCE, LOGS & POLICY DE RECYCLAGE DES POOLS ---
