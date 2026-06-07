@@ -8,7 +8,7 @@ RESULT_DIR="${SCRIPT_DIR}/csv_result"
 mkdir -p "$RESULT_DIR"
 
 # --- Configuration Dynamique ---
-HOST_VARS_DIR="/projet_optimedit/Git/host_vars"
+HOST_VARS_DIR="${SCRIPT_DIR}/../host_vars"
 CA_PATH="/etc/ssl/certs/"
 DATE_STR=$(date +%Y%m%d_%H%M)
 OUTPUT_CSV="${RESULT_DIR}/audit_winrm_${DATE_STR}.csv"
