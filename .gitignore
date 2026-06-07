@@ -12,4 +12,7 @@ ansible_collections/
 # *vault*.yml
 
 # Ignorer les rapports d'audit CSV
-00.00.audit_winrm_certs/csv_result/*.csv
+**/00.00.audit_winrm_certs/csv_result/*.csv
+#**/csv_result/*.csv
+#**/infra_iis_cert_wc_ansible_v.2.14.18/00.00.audit_winrm_certs/csv_result/*.csv
+#**/infra_iis_cert_fqdn_san_ansible_v.2.14.18/00.00.audit_winrm_certs/csv_result/*.csv
