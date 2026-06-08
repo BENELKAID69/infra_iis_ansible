@@ -14,3 +14,9 @@ collections:
 
   - name: community.windows
     version: 3.1.0
+
+# taper ces deux commandes, utilise ansible-galaxy avec l'option -r (requirements).
+#01.  sudo ansible-galaxy collection install -r 00.00.requirements.yml -p /usr/share/ansible/collections --force
+
+# Si notre playbook a spécifiquement besoin de microsoft.ad, télécharger également de manière globale :
+# 02. sudo ansible-galaxy collection install microsoft.ad -p /usr/share/ansible/collections

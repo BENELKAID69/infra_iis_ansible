@@ -49,6 +49,8 @@ ansible_port: 5986
 # Politique de vérification SSL : Validation stricte de la chaîne de confiance de la CA d'entreprise
 ansible_winrm_server_cert_validation: validate
 
+# Forcer Ansible à utiliser le magasin de l'OS et ignorer le bundle interne de Python
+ansible_winrm_ca_trust_path: /etc/ssl/certs/ca-certificates.crt
 # ------------------------------------------------------------------------------
 # SECTION : VARIABLES MÉTIER PARTAGÉES (ACTIVE DIRECTORY & INFRASTRUCTURE IIS)
 # ------------------------------------------------------------------------------
