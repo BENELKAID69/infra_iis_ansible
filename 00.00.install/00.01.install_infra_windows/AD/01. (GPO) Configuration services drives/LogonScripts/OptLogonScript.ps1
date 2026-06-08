@@ -6,29 +6,47 @@
     - Verifie la disponibilite du serveur avant de tenter les mappages.
     - Teste l'acces a chaque dossier : si l'utilisateur a le droit, le lecteur est monte.
 .NOTES
-    AUTHOR: Driss BENELKAID - optimedit.fr@gmail.ocm
-    DATE: 28/12/2025
-    VERSION: 0.1
+    AUTHOR: Driss BENELKAID - optimedit.eu
+    DATE: 08/06/2026
+    VERSION: 1.1 (Production - Avec libellés de suivi Name)
+#>
+<#
+Configuration GPO : Configuration utilisateur > Parametres Windows > Scripts > Ouverture de session.
+Parametres : -ExecutionPolicy Bypass -WindowStyle Hidden
+Note : Verifier que le fichier est "Debloque" dans les proprietes du fichier.
 #>
 
 # -----------------------------------------------------------------------------
-# 1. PARAMETRES GENERIQUES - A ADAPTER POUR AUTRE CLIENT
+# 1. PARAMETRES GENERIQUES - INFRASTRUCTURE CIBLE
 # -----------------------------------------------------------------------------
-$ServerFQDN  = "opt-dc01"
+$ServerFQDN  = "opt-fs02"
 $UNCBase     = "\\$ServerFQDN"
 $PathToTest  = "$UNCBase\OPT_Commun" # Dossier utilise pour valider la presence du serveur
 $LogFile     = "$env:TEMP\LogonDrives_OptimedIt.log"
 $NetworkObj  = New-Object -ComObject WScript.Network
 
-# Liste exhaustive des partages - A ADAPTER POUR AUTRE CLIENT
+# Liste des partages - NOMENCLATURE ET SERVICES OPT
 $DrivesToTest = @(
-    @{ Letter = "K:"; Path = "$UNCBase\OPT_Commun" }
-    @{ Letter = "T:"; Path = "$UNCBase\OPT_Direction" }
-    @{ Letter = "R:"; Path = "$UNCBase\OPT_RH" }
-    @{ Letter = "M:"; Path = "$UNCBase\OPT_Compta" }
-    @{ Letter = "V:"; Path = "$UNCBase\OPT_Dev" }
-    @{ Letter = "W:"; Path = "$UNCBase\OPT_Prod" }
-    @{ Letter = "I:"; Path = "$UNCBase\OPT_IT" }
+    @{ Name = "Commun";       Letter = "K:"; Path = "$UNCBase\OPT_Commun" }
+    @{ Name = "Direction";    Letter = "T:"; Path = "$UNCBase\OPT_Direction" }
+    @{ Name = "Comptabilite"; Letter = "M:"; Path = "$UNCBase\OPT_Comptabilite" }
+    @{ Name = "Paie";         Letter = "P:"; Path = "$UNCBase\OPT_Paie" }
+    @{ Name = "RH";           Letter = "R:"; Path = "$UNCBase\OPT_RH" }
+    @{ Name = "CE";           Letter = "C:"; Path = "$UNCBase\OPT_CE" }
+    @{ Name = "IT";           Letter = "I:"; Path = "$UNCBase\OPT_IT" }
+    @{ Name = "Production";   Letter = "W:"; Path = "$UNCBase\OPT_Production" }
+    @{ Name = "Formation";    Letter = "F:"; Path = "$UNCBase\OPT_Formation" }
+    @{ Name = "Achat";        Letter = "A:"; Path = "$UNCBase\OPT_Achat" }
+    @{ Name = "Commercial";   Letter = "Q:"; Path = "$UNCBase\OPT_Commercial" }
+    @{ Name = "Client";       Letter = "L:"; Path = "$UNCBase\OPT_Client" }
+    @{ Name = "Juridique";    Letter = "J:"; Path = "$UNCBase\OPT_Juridique" }
+    @{ Name = "Blog";         Letter = "B:"; Path = "$UNCBase\OPT_Blog" }
+    
+    # --- Services programmes pour integration future (Commentes pour la performance) ---
+    @{ Name = "Dev";        Letter = "V:"; Path = "$UNCBase\OPT_projets_optimedit\Dev" }
+    @{ Name = "Marketing";  Letter = "N:"; Path = "$UNCBase\OPT_Marketing" }
+    @{ Name = "Logistique"; Letter = "O:"; Path = "$UNCBase\OPT_Logistique" }
+    @{ Name = "RD";         Letter = "X:"; Path = "$UNCBase\OPT_RD" }
 )
 
 # -----------------------------------------------------------------------------
@@ -54,7 +72,7 @@ Write-Log "Execution script netlogon : OptLogonScript.ps1"
 Write-Log "Stabilisation reseau : Pause de 20 secondes..."
 Start-Sleep -Seconds 20
 
-# Boucle de verification intelligente de la disponibilite du service de fichiers
+# Boucle de verification de la disponibilite du service de fichiers
 $RetryCount = 0
 $MaxRetries = 10
 
@@ -91,12 +109,12 @@ foreach ($Drive in $DrivesToTest) {
             
             # Mappage avec persistance
             $NetworkObj.MapNetworkDrive($Drive.Letter, $Drive.Path, $true)
-            Write-Log "SUCCES : $($Drive.Letter) monte sur $($Drive.Path)"
+            Write-Log "SUCCES : Lecteur $($Drive.Letter) monte pour le service [$($Drive.Name)] sur $($Drive.Path)"
         } catch {
             Write-Log "ERREUR : $($Drive.Letter) ($($_.Exception.Message))"
         }
     } else {
-        Write-Log "INFO : Acces non autorise ou dossier inexistant pour $($Drive.Path)"
+        Write-Log "INFO : Acces non autorise ou dossier inexistant pour le service [$($Drive.Name)]"
     }
 }
 

@@ -6,7 +6,7 @@ DATE   : 28/12/2025
 
 --- DESCRIPTION ---
 Ce pack contient deux scripts (PowerShell et Batch) permettant de monter 
-les lecteurs reseau en fonction des droits reels des utilisateurs.
+les lecteurs reseau en fonction des droits partages reels des utilisateurs.
 
 --- INSTRUCTIONS DE DEPLOIEMENT ---
 1. Section "A ADAPTER POUR AUTRE CLIENT" :

@@ -3,16 +3,16 @@ setlocal enabledelayedexpansion
 chcp 1252 >nul
 
 :: =============================================================================
-:: AUTHOR  : Driss BENELKAID - optimedit.fr@gmail.com
-:: DATE    : 28/12/2025
-:: VERSION : 0.1
+:: AUTHOR  : Driss BENELKAID - optimedit.eu
+:: DATE    : 08/06/2026
+:: VERSION : 1.1 (Production - Avec libellés de suivi Name)
 :: DESC    : Mappage reseau universel base sur les droits d'acces.
 :: =============================================================================
 
 :: =============================================================================
-:: 1. CONFIGURATION - A ADAPTER POUR AUTRE CLIENT
+:: 1. CONFIGURATION - INFRASTRUCTURE CIBLE
 :: =============================================================================
-set "ServerName=opt-dc01"
+set "ServerName=opt-fs02"
 set "FileServer=\\%ServerName%"
 set "PathToTest=%FileServer%\OPT_Commun"
 set "LogFile=%TEMP%\LogonDrives_OptimedIt.log"
@@ -54,14 +54,27 @@ goto :END_LOG
 net use * /delete /y >nul 2>&1
 timeout /t 2 /nobreak >nul
 
-:: --- LISTE DES LECTEURS - A ADAPTER POUR AUTRE CLIENT ---
-call :MapDrive K: "%FileServer%\OPT_Commun"
-call :MapDrive T: "%FileServer%\OPT_Direction"
-call :MapDrive R: "%FileServer%\OPT_RH"
-call :MapDrive M: "%FileServer%\OPT_Compta"
-call :MapDrive V: "%FileServer%\OPT_Dev"
-call :MapDrive W: "%FileServer%\OPT_Prod"
-call :MapDrive I: "%FileServer%\OPT_IT"
+:: --- LISTE DES LECTEURS - NOMENCLATURE ET SERVICES OPT EXACTS ---
+call :MapDrive K: "%FileServer%\OPT_Commun" "Commun"
+call :MapDrive T: "%FileServer%\OPT_Direction" "Direction"
+call :MapDrive M: "%FileServer%\OPT_Comptabilite" "Comptabilite"
+call :MapDrive P: "%FileServer%\OPT_Paie" "Paie"
+call :MapDrive R: "%FileServer%\OPT_RH" "RH"
+call :MapDrive C: "%FileServer%\OPT_CE" "CE"
+call :MapDrive I: "%FileServer%\OPT_IT" "IT"
+call :MapDrive W: "%FileServer%\OPT_Production" "Production"
+call :MapDrive F: "%FileServer%\OPT_Formation" "Formation"
+call :MapDrive A: "%FileServer%\OPT_Achat" "Achat"
+call :MapDrive Q: "%FileServer%\OPT_Commercial" "Commercial"
+call :MapDrive L: "%FileServer%\OPT_Client" "Client"
+call :MapDrive J: "%FileServer%\OPT_Juridique" "Juridique"
+call :MapDrive B: "%FileServer%\OPT_Blog" "Blog"
+
+:: --- Services programmes pour integration future (Commentes pour la performance) ---
+call :MapDrive V: "%FileServer%\OPT_projets_optimedit\Dev" "Dev"
+call :MapDrive N: "%FileServer%\OPT_Marketing" "Marketing"
+call :MapDrive O: "%FileServer%\OPT_Logistique" "Logistique"
+call :MapDrive X: "%FileServer%\OPT_RD" "RD"
 
 :: =============================================================================
 :: 4. FIN DU SCRIPT ET OUVERTURE LOG
@@ -80,17 +93,18 @@ exit /b
 :MapDrive
 set "DriveLtr=%~1"
 set "DrivePath=%~2"
+set "ServiceName=%~3"
 
 if exist "%DrivePath%\*" (
     net use %DriveLtr% /delete /y >nul 2>&1
     net use %DriveLtr% "%DrivePath%" /persistent:no >nul 2>&1
     
     if exist %DriveLtr% (
-        %WriteLog% SUCCES : %DriveLtr% monte sur %DrivePath%\""
+        %WriteLog% SUCCES : Lecteur %DriveLtr% monte pour le service [%ServiceName%] sur %DrivePath%\""
     ) else (
-        %WriteLog% ERREUR : Echec montage %DriveLtr%\""
+        %WriteLog% ERREUR : Echec montage %DriveLtr% pour le service [%ServiceName%]\""
     )
 ) else (
-    %WriteLog% INFO : Acces non autorise pour %DrivePath%\""
+    %WriteLog% INFO : Acces non autorise ou dossier inexistant pour le service [%ServiceName%]\""
 )
 goto :eof
