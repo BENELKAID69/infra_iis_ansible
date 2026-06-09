@@ -2,6 +2,7 @@
 # ==============================================================================
 # NOM DU SCRIPT : 00.00.requirements.sh
 # CONFIGURATION : Alignement et durcissement des collections globales (System)
+#                 & Restauration des droits collaboratifs (SGID)
 # AUTHOR        : Optimedit
 # ==============================================================================
 
@@ -15,6 +16,7 @@ NC="\e[0m"
 REQ_YML="00.00.requirements.yml"
 SYS_PATH="/usr/share/ansible/collections"
 TARGET_DIR="${SYS_PATH}/ansible_collections"
+ADMIN_GROUP="gr_ansible_admins"
 
 echo -e "${BLUE}🔍 [START] Vérification et alignement des collections Ansible globales...${NC}"
 
@@ -66,6 +68,36 @@ if [ -d "${TARGET_DIR}/microsoft" ]; then
 else
     echo -e "   ${YELLOW}[WARN] Collection microsoft.ad manquante. Installation globale...${NC}"
     sudo ansible-galaxy collection install microsoft.ad -p "$SYS_PATH" --force > /dev/null 2>&1
+fi
+
+echo "------------------------------------------------------------"
+
+# 6. SÉCURISATION ET DROITS COLLABORATIFS (SGID)
+echo -e "${BLUE}🔄 Alignement des privilèges et persistance du contexte de groupe (SGID)...${NC}"
+
+# Détection dynamique du dossier racine du projet actuel (compatible master-03 et master-04)
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [ -d "$PROJECT_DIR" ]; then
+    # 1. Alignement récursif de la propriété du dossier vers l'admin principal et le groupe
+    sudo chown -R admin_ansible:${ADMIN_GROUP} "$PROJECT_DIR"
+    
+    # 2. Permissions de base (Lecture/Écriture/Traversée pour Propriétaire et Groupe - Mode 2775)
+    sudo chmod -R 2775 "$PROJECT_DIR"
+    
+    # 3. Forçage du bit SGID (g+s) de manière récursive sur tous les répertoires
+    sudo find "$PROJECT_DIR" -type d -exec chmod g+s {} +
+    
+    # 4. Ajustement des droits d'écriture explicites pour le groupe (Prévient les umask restrictifs)
+    sudo find "$PROJECT_DIR" -type d -exec chmod g+rwX {} +
+    sudo find "$PROJECT_DIR" -type f -exec chmod g+rw {} +
+    
+    # 5. S'assurer que tous les scripts shell (.sh) sont bien exécutables par le groupe
+    sudo find "$PROJECT_DIR" -name "*.sh" -exec chmod ug+x {} +
+
+    echo -e "   ${GREEN}[OK] Droits collaboratifs réappliqués avec succès sur : $PROJECT_DIR${NC}"
+else
+    echo -e "   ${RED}[ERREUR] Impossible de détecter le répertoire du projet pour les permissions.${NC}"
 fi
 
 echo "------------------------------------------------------------"
